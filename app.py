@@ -1,0 +1,22 @@
+from flask import Flask, render_template, request
+import qrcode
+from io import BytesIO
+import base64
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    qr_data = ""
+    if request.method == 'POST':
+        url = request.form['url']
+        if url:
+            qr_img = qrcode.make(url)
+            bytes_io = BytesIO()
+            qr_img.save(bytes_io, format='PNG')
+            qr_data = base64.b64encode(bytes_io.getvalue()).decode()
+
+    return render_template('index.html', qr_data=qr_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
