@@ -1,7 +1,7 @@
 #build docker container 
 #docker build -t generador-qr .
 #run container
-#docker run -p 5000:5000 generador-qr
+#docker run -e PORT=8080 -p 8080:8080 generador-qr
 
 # Utiliza una imagen base oficial de Python
 FROM python:3.9-slim
@@ -18,8 +18,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copia el resto de tu aplicación al directorio de trabajo
 COPY . .
 
-# Expone el puerto que Flask utilizará
-EXPOSE 5000
+# Define el valor predeterminado para la variable de entorno PORT
+ENV PORT=5000
+
+# Informa a Docker que el contenedor escucha en el puerto especificado en tiempo de ejecución.
+EXPOSE $PORT
 
 # Comando para ejecutar la aplicación
 CMD ["flask", "run", "--host=0.0.0.0"]
